@@ -106,6 +106,29 @@ Efter vinst får användaren frågan:
 
 ---
 
+
+## ⚙️ Funktionert
+- Klassisk 15-pussel-logik
+- Spelplanens storlek hämtas automatiskt
+- Fasta färger för spelplan och brickor
+- Kommentarer i koden för tydlighet
+
+---
+
+## 🧑‍💻 Versionshantering
+Projektet har utvecklats med Git genom feature-brancher (t.ex. `feature/comments`, `feature-tile-fix`),
+som successivt har mergats in i `master` via pull requests.  
+Detta syns i Git-historiken med `git log --graph --oneline --all`.
+
+---
+
+## ▶️ Körning
+1. Klona projektet
+2. Öppna i IntelliJ
+3. Kör `GameFrame.java` för att starta spelet
+
+---
+
 ## 💻 Om spelet
 
 Spelet är inspirerat av det klassiska *15-pusslet*, där målet är att ordna brickorna i stigande ordning genom att flytta dem mot den tomma rutan.  
