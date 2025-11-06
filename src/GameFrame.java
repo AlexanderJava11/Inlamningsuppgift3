@@ -6,118 +6,115 @@ import java.awt.Image;
 import java.net.URL;
 import javax.swing.*;
 
-/**
- * Klassen GameFrame representerar själva spel-fönstret för "15-spelet".
- * Den hanterar både startmenyn och spelvyn med hjälp av ett CardLayout.
- * Klassen är final, vilket betyder att den inte kan ärvas.
- */
-public final class GameFrame extends JFrame {
+// Klassen GameFrame är själva spel-fönstret för 15-spelet.
+// Den visar först startskärmen och sen själva spelet.
+public final class GameFrame extends JFrame {  // final betyder att den inte kan ärvas
 
-    // CardLayout används för att växla mellan olika "sidor" i fönstret (t.ex. startskärm och spel).
+    // Används för att växla mellan olika sidor (t.ex. start och spel)
     private final CardLayout cards = new CardLayout();
 
-    // Panelen som innehåller alla sidor (startmeny och spel).
+    // Panelen som håller alla sidor
     private final JPanel cardPanel;
 
-    // Panel som håller ihop spelets olika delar (bräde, knappar, statusfält).
+    // Panel som visar själva spelet
     private JPanel gameWrapper;
 
-    // Spelbrädet där själva spelet sker.
+    // Själva spelbrädet (logiken)
     private Board board;
 
-    // Panel som ritar upp spelbrädet grafiskt.
+    // Panelen som ritar ut spelbrädet
     private BoardPanel boardPanel;
 
-    // Kontroller som hanterar spelets logik (t.ex. drag, ångra, tid).
+    // Kontrollen som hanterar logiken (drag, ångra, tid osv.)
     private GameController controller;
 
-    // Etikett som visar status (antal drag och tid).
+    // Textfält som visar drag och tid
     private final JLabel statusLabel;
 
-    // Konstruktor som skapar spelets huvudfönster och startskärmen.
+    // Konstruktor – skapar fönstret och startmenyn
     public GameFrame() {
-        super("15-spelet"); // Sätter titeln på fönstret.
+        super("15-spelet"); // Sätter fönstrets titel
 
-        // Skapar huvudpanelen med kortsystemet (CardLayout).
+        // Skapar panelen som kan växla mellan olika sidor
         this.cardPanel = new JPanel(this.cards);
 
-        // Skapar statusetiketten som visar drag och tid.
+        // Skapar textfältet som visar status
         this.statusLabel = new JLabel("Drag: 0    Tid: 0s");
 
-        // Stänger programmet när man trycker på stäng-knappen.
+        // Stänger programmet när man klickar på stäng-knappen
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        // Skapar startskärmen.
+        // Skapar startskärmen
         StartPanel start = new StartPanel((e) -> this.showSizeDialogAndStart());
         start.setLayout(new BorderLayout());
 
-        // Lägger till startpanelen i kortsystemet under namnet "Start".
+        // Lägger till startpanelen i kortsystemet under namnet "Start"
         this.cardPanel.add(start, "Start");
 
-        // Skapar en etikett för startbilden.
+        // Skapar en label som ska visa startbilden
         JLabel imgLabel = new JLabel();
         imgLabel.setHorizontalAlignment(SwingConstants.CENTER);
 
-        // Försöker hämta bilden "Start.png" från projektresurserna.
+        // Försöker hämta bilden "Start.png"
         URL u = this.getClass().getResource("Start.png");
 
-        // Om bilden finns, skala den och visa den.
+        // Om bilden hittas – visa den
         if (u != null) {
-            ImageIcon icon = new ImageIcon(u);
-            Image scaled = icon.getImage().getScaledInstance(360, 240, Image.SCALE_SMOOTH);
-            imgLabel.setIcon(new ImageIcon(scaled));
+            ImageIcon icon = new ImageIcon(u);  // Skapar en ikon av bilden
+            Image scaled = icon.getImage().getScaledInstance(360, 240, Image.SCALE_SMOOTH); // Skalar ner bilden
+            imgLabel.setIcon(new ImageIcon(scaled)); // Visar bilden
         } else {
-            // Om bilden inte hittas, visa text istället.
+            // Om bilden inte finns, visa text istället
             imgLabel.setText("Startbild saknas");
         }
 
-        // Lägger till bilden i mitten av startskärmen.
+        // Lägger till bilden i mitten av startskärmen
         start.add(imgLabel, BorderLayout.CENTER);
 
-        // Skapar en informationsetikett högst upp på startskärmen.
+        // Skapar en text högst upp med instruktion
         JLabel info = new JLabel("Tryck på 'Starta spelet' för att börja och välj sedan storlek (2-8).", SwingConstants.CENTER);
-        info.setFont(new Font("SansSerif", Font.PLAIN, 14));
+        info.setFont(new Font("SansSerif", Font.PLAIN, 14)); // Gör texten snyggare
         start.add(info, BorderLayout.NORTH);
 
-        // Skapar en knapp för att starta spelet.
+        // Skapar knappen "Starta spelet!"
         JButton startButton = new JButton("Starta spelet!");
 
-        // Panel som håller startknappen.
+        // Skapar en panel som ska hålla knappen
         JPanel p = new JPanel();
         p.add(startButton);
         start.add(p, BorderLayout.SOUTH);
 
-        // Skapar panelen där spelet ska visas senare.
+        // Skapar tom panel för själva spelet (visas senare)
         this.gameWrapper = new JPanel(new BorderLayout());
         this.cardPanel.add(this.gameWrapper, "Game");
 
-        // Lägger till huvudpanelen (cardPanel) i fönstret.
+        // Lägger till cardPanel i fönstret
         this.add(this.cardPanel);
 
-        // När man klickar på startknappen anropas startGame().
+        // När man klickar på startknappen startas spelet
         startButton.addActionListener((e) -> this.startGame());
 
-        // Anpassar fönstret till innehållet.
+        // Anpassar fönstrets storlek efter innehållet
         this.pack();
 
-        // Centrerar fönstret på skärmen.
+        // Centrerar fönstret på skärmen
         this.setLocationRelativeTo((Component) null);
 
-        // Visar startskärmen först.
+        // Visar startskärmen först
         this.cards.show(this.cardPanel, "Start");
 
-        // Gör fönstret synligt.
+        // Gör fönstret synligt
         this.setVisible(true);
     }
 
-    // Huvudmetoden som startar programmet.
+    // Huvudmetoden – programmet startar här
     static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> new GameFrame());
+        SwingUtilities.invokeLater(() -> new GameFrame()); // Skapar fönstret
     }
 
-    // startGame() visar en dialogruta för att välja storlek och startar sedan spelet.
+    // Visar en dialog för att välja storlek och startar spelet
     private void startGame() {
-        // Ber användaren skriva in storleken på spelet (t.ex. 3 för 3x3).
+        // Frågar användaren vilken storlek spelet ska ha
         String input = JOptionPane.showInputDialog(
                 this,
                 "Välj storlek (2-8)\nSkriv t.ex. 3 för 3x3:",
@@ -125,52 +122,52 @@ public final class GameFrame extends JFrame {
                 JOptionPane.QUESTION_MESSAGE
         );
 
-        // Om användaren inte avbröt.
+        // Om användaren inte tryckte "Avbryt"
         if (input != null) {
             int size;
             try {
-                // Försök tolka inmatningen som ett heltal.
+                // Försök läsa in talet som användaren skrev
                 size = Integer.parseInt(input.trim());
             } catch (NumberFormatException var15) {
-                // Om det inte är ett giltigt heltal, visa felmeddelande.
+                // Om användaren skrev något som inte är ett tal
                 JOptionPane.showMessageDialog(this, "Skriv ett giltigt heltal.", "Fel", JOptionPane.ERROR_MESSAGE);
                 return;
             }
 
-            // Kontrollera att storleken är mellan 2 och 8.
+            // Om talet är mellan 2 och 8 – godkänt
             if (size >= 2 && size <= 8) {
 
-                // Skapa ett nytt spelbräde.
+                // Skapar ett nytt bräde
                 this.board = new Board(size);
 
-                // Skapa panelen som ritar upp brädet.
+                // Skapar panelen som ritar brädet
                 this.boardPanel = new BoardPanel(this.board);
 
-                // Skapa spelets kontroller.
+                // Skapar spelkontrollen (logik)
                 this.controller = new GameController(this.board, this.boardPanel, this.statusLabel, this);
 
-                // Koppla kontrollern till panelen.
+                // Kopplar kontrollern till panelen
                 this.boardPanel.setController(this.controller);
 
-                // --- Skapar menyraden ---
+                // Skapar menyraden
                 JMenuBar menyBar = new JMenuBar();
                 JMenu gameMeny = new JMenu("Spelet");
 
-                // Skapar menyval.
+                // Skapar menyval
                 JMenuItem newItem = new JMenuItem("Nytt spel");
                 JMenuItem undoItem = new JMenuItem("Ångra");
                 JMenuItem redoItem = new JMenuItem("Gör om");
                 JMenuItem hsItem = new JMenuItem("Highscore");
                 JMenuItem exitItem = new JMenuItem("Avsluta");
 
-                // Kopplar menyvalen till funktioner.
+                // Kopplar menyvalen till funktioner
                 newItem.addActionListener((a) -> this.controller.startNewGame());
                 undoItem.addActionListener((a) -> this.controller.undo());
                 redoItem.addActionListener((a) -> this.controller.redo());
                 hsItem.addActionListener((a) -> this.controller.showHighscores());
                 exitItem.addActionListener((a) -> System.exit(0));
 
-                // Lägger till menyobjekten i menyn.
+                // Lägger till valen i menyn
                 gameMeny.add(newItem);
                 gameMeny.addSeparator();
                 gameMeny.add(undoItem);
@@ -181,10 +178,10 @@ public final class GameFrame extends JFrame {
                 gameMeny.add(exitItem);
                 menyBar.add(gameMeny);
 
-                // Lägger till menyn i fönstret.
+                // Lägger menyn i fönstret
                 this.setJMenuBar(menyBar);
 
-                // --- Skapar knappar under spelbrädet ---
+                // Skapar knappar under spelbrädet
                 JButton newGameButton = new JButton("Nytt spel");
                 newGameButton.addActionListener((a) -> this.controller.startNewGame());
 
@@ -194,7 +191,7 @@ public final class GameFrame extends JFrame {
                 JButton redoButton = new JButton("Gör om");
                 redoButton.addActionListener((a) -> this.controller.redo());
 
-                // Panel för knapparna.
+                // Skapar panel för knappar och status
                 JPanel south = new JPanel(new BorderLayout());
                 JPanel buttonPanel = new JPanel();
 
@@ -202,43 +199,43 @@ public final class GameFrame extends JFrame {
                 buttonPanel.add(undoButton);
                 buttonPanel.add(redoButton);
 
-                // Lägger knappar till höger, status till vänster.
+                // Status till vänster, knappar till höger
                 south.add(buttonPanel, BorderLayout.EAST);
                 south.add(this.statusLabel, BorderLayout.WEST);
 
-                // Tar bort tidigare innehåll och lägger till spelvyn.
+                // Rensar tidigare innehåll och lägger till nya paneler
                 this.gameWrapper.removeAll();
                 this.gameWrapper.add(this.boardPanel, BorderLayout.CENTER);
                 this.gameWrapper.add(south, BorderLayout.SOUTH);
 
-                // Uppdaterar layouten.
+                // Uppdaterar layouten
                 this.cardPanel.revalidate();
                 this.cardPanel.repaint();
 
-                // Visar spelvyn.
+                // Visar själva spelvyn
                 this.cards.show(this.cardPanel, "Game");
 
-                // Startar ett nytt spel.
+                // Startar spelet
                 this.controller.startNewGame();
                 this.boardPanel.refresh();
                 this.controller.updateStatus();
 
-                // Startar en timer som uppdaterar status var 0,5 sekund.
+                // Timer som uppdaterar tiden var 0,5 sekund
                 new Timer(500, (evt) -> this.controller.updateStatus()).start();
 
             } else {
-                // Om storleken inte är mellan 2 och 8, visa fel.
+                // Om talet inte är mellan 2 och 8 – felmeddelande
                 JOptionPane.showMessageDialog(this, "Storleken måste vara mellan 2 och 8.", "Fel", JOptionPane.ERROR_MESSAGE);
             }
         }
     }
 
-    // Metoden backToStart() växlar tillbaka till startskärmen.
+    // Går tillbaka till startskärmen
     public void backToStart() {
         this.cards.show(this.cardPanel, "Start");
     }
 
-    // Metoden showSizeDialogAndStart() visar dialogrutan för storlek och startar spelet.
+    // Visar dialogen för storlek och startar spelet
     public void showSizeDialogAndStart() {
         this.startGame();
     }
