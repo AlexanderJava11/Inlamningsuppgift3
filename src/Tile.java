@@ -1,5 +1,5 @@
 // Klassen Tile representerar en "ruta" (t.ex. i ett spelbräde) som innehåller ett värde.
-// Klassen är final, vilket betyder att den inte kan ärvas av andra klasser
+// Klassen är final, vilket betyder att den inte kan ärvas av andra klasser.
 public final class Tile {
     
     // Variabeln 'value' lagrar värdet för rutan. Den är final, så den kan inte ändras efter att objektet skapats.
