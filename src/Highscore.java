@@ -8,113 +8,97 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-// Klassen Highscore hanterar sparning och inläsning av highscore-listan för spelet.
-// Den läser och skriver till en textfil ("Highscore.txt") där spelresultat lagras.
+// Klassen Highscore hanterar att läsa och skriva highscore-listan i en textfil
 public class Highscore {
 
-    // Filen där highscore-resultaten sparas.
+    // Filen där highscores sparas
     private static final File FILE = new File("Highscore.txt");
 
-    // Max antal resultat som sparas i listan (t.ex. topp 10).
+    // Max antal resultat som ska sparas (t.ex. topp 10)
     private static final int MAX = 10;
 
-    // Metoden load() läser in highscore-listan från filen "Highscore.txt".
-    // Den returnerar en lista med Entry-objekt (namn, drag, tid).
+    // Läser in highscores från filen och returnerar en lista med Entry-objekt
     public static List<Entry> load() {
-        List<Entry> list = new ArrayList<>();
+        List<Entry> list = new ArrayList<>(); // Lista som byggs upp
 
-        // Om filen inte finns, returnera en tom lista.
+        // Om filen inte finns, returnera tom lista direkt
         if (!FILE.exists()) {
             return list;
         } else {
             String line;
 
-            // Läser filen rad för rad.
+            // Läs filen rad för rad
             try (BufferedReader br = new BufferedReader(new FileReader(FILE))) {
                 while ((line = br.readLine()) != null) {
-                    // Varje rad är uppdelad med semikolon (t.ex. "Anna;42;12345")
+                    // Dela raden på semikolon: "Namn;drag;tid"
                     String[] parts = line.split(";");
 
-                    // Om raden innehåller minst tre delar (namn, drag, tid)
+                    // Om raden har minst 3 delar, tolka dem
                     if (parts.length >= 3) {
-                        String name = parts[0];
-                        int moves = Integer.parseInt(parts[1]);
-                        long time = Long.parseLong(parts[2]);
+                        String name = parts[0]; // Namn
+                        int moves = Integer.parseInt(parts[1]); // Antal drag
+                        long time = Long.parseLong(parts[2]); // Tid i ms
 
-                        // Skapar en ny Entry och lägger till i listan.
+                        // Lägg till en ny Entry i listan
                         list.add(new Entry(name, moves, time));
                     }
                 }
             } catch (NumberFormatException | IOException var10) {
-                // Om något går fel (t.ex. trasig fil), ignoreras felet tyst.
-                // (Detta kan göras bättre med felmeddelande, men här hoppar vi över det.)
+                // Om något går fel (t.ex. trasigt innehåll) så ignorerar vi raden/felet här
+                // (kan förbättras genom att logga eller visa fel)
             }
 
-            // Sorterar listan så att bästa resultaten hamnar först.
+            // Sortera listan så bästa resultat kommer först
             Collections.sort(list);
-            return list;
+            return list; // Returnera sorterad lista
         }
     }
 
-    // Metoden save() sparar highscore-listan till filen.
-    // Endast de 10 bästa (eller färre) resultaten sparas.
+    // Sparar en lista med Entry till fil, bara topp MAX objekt sparas
     public static void save(List<Entry> list) {
-        // Sorterar listan så att den bästa poängen kommer först.
+        // Sortera först så att bäst kommer först
         Collections.sort(list);
 
-        // Skriver till filen med BufferedWriter.
+        // Skriv ut till fil
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(FILE))) {
 
-            // Bestämmer hur många resultat som ska sparas (max 10).
+            // Bestäm hur många vi ska skriva (högst MAX)
             int limit = Math.min(MAX, list.size());
 
-            // Skriver varje entry som en rad i filen.
+            // Skriv varje entry som "name;moves;timeMs"
             for (int i = 0; i < limit; ++i) {
                 Entry entry = list.get(i);
                 bw.write(entry.name + ";" + entry.moves + ";" + entry.timeMs);
-                bw.newLine(); // Går till nästa rad.
+                bw.newLine(); // Nya raden i filen
             }
         } catch (IOException e) {
-            // Skriver ut fel i konsolen om filen inte kunde sparas.
+            // Om skrivningen misslyckas: skriv stacktrace till konsolen
             e.printStackTrace();
         }
     }
 
-    // Metoden addEntry() lägger till ett nytt resultat i listan och sparar den.
+    // Lägger till en ny entry i filen (läser in befintliga, lägger till och sparar)
     public static void addEntry(Entry entry) {
-        // Laddar befintliga highscores.
-        List<Entry> list = load();
-
-        // Lägger till det nya resultatet.
-        list.add(entry);
-
-        // Sparar listan igen.
-        save(list);
+        List<Entry> list = load(); // Läs befintliga highscores
+        list.add(entry);           // Lägg till nya
+        save(list);                // Spara tillbaka till fil
     }
 
-    // Klassen Entry representerar ett highscore-resultat.
-    // Den är static och final, vilket betyder att den bara används inom Highscore
-    // och inte kan ändras eller ärvas.
+    // Entry representerar ett highscore-resultat (namn, drag, tid)
     public static final class Entry implements Comparable<Entry> {
 
-        // Spelarens namn.
-        public final String name;
+        public final String name;   // Spelarens namn
+        public final int moves;     // Antal drag
+        public final long timeMs;   // Tid i millisekunder
 
-        // Antal drag som spelaren behövde.
-        public final int moves;
-
-        // Speltid i millisekunder.
-        public final long timeMs;
-
-        // Konstruktor som skapar ett nytt highscore-objekt.
+        // Skapar en ny Entry
         public Entry(String name, int moves, long timeMs) {
             this.name = name;
             this.moves = moves;
             this.timeMs = timeMs;
         }
 
-        // Metoden compareTo() används för att sortera resultaten.
-        // Först jämförs antal drag — om lika, jämförs tiden.
+        // Jämför två Entry för sortering: först moves, om lika -> timeMs
         @Override
         public int compareTo(Entry o) {
             return this.moves != o.moves
@@ -122,8 +106,7 @@ public class Highscore {
                     : Long.compare(this.timeMs, o.timeMs);
         }
 
-        // Metoden toString() returnerar en textversion av resultatet.
-        // Den visar namn, antal drag och tid både i millisekunder och sekunder.
+        // Ger en enkel textbeskrivning av entry
         @Override
         public String toString() {
             double seconds = (double) this.timeMs / 1000.0;

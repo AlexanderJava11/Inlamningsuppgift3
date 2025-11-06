@@ -5,43 +5,42 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-// Klassen StartPanel är en del av GUI:t (Graphical User Interface) och utgör startsidan i spelet.
-// Den ärver från JPanel, vilket betyder att den är en panel som kan läggas till i ett JFrame
-public class StartPanel extends JPanel {
-    
-    // Konstruktorn tar emot en ActionListener som parameter.
-    // Detta gör att du kan skicka in vad som ska hända när användaren klickar på "Börja spela".
+// Klassen StartPanel är startsidan i spelet (en del av GUI:t)
+public class StartPanel extends JPanel {   // Den ärver från JPanel så den kan visas i ett fönster
+
+    // Konstruktorn tar emot en ActionListener som ska köras när man trycker på "Börja spela"
     public StartPanel(ActionListener onStart) {
-       
-        // Sätter layouten till BorderLayout så att vi enkelt kan placera komponenter i t.ex. mitten och botten.
+
+        // Sätter layouten till BorderLayout – det betyder att vi kan placera saker i mitten, botten osv.
         this.setLayout(new BorderLayout());
 
-        // Försöker ladda en bild som heter "Start.png" från samma mapp som klassen ligger i.
+        // Förklarar en JLabel som ska visa bilden på startsidan
         JLabel image;
         try {
+            // Försöker ladda en bild som heter "Start.png" från samma mapp som klassen ligger i
             image = new JLabel(new ImageIcon(this.getClass().getResource("Start.png")));
         } catch (Exception e) {
-            // Om bilden inte hittas visas istället en text.
-            image = new JLabel("Startbild inte hittad");
-            // Texten centreras horisontellt i JLabel.
-            image.setHorizontalAlignment(0);
+            // Om bilden inte finns eller inte kan laddas
+            image = new JLabel("Startbild inte hittad"); // Visa en text istället
+            image.setHorizontalAlignment(0); // Centrerar texten i JLabel
         }
 
-        // Lägger till bilden (eller texten) i mitten av panelen.
+        // Lägger till bilden (eller texten) i mitten av panelen
         this.add(image, "Center");
-      
-        // Skapar en knapp med texten "Börja spela".
+
+        // Skapar en knapp med texten "Börja spela"
         JButton startButton = new JButton("Börja spela");
-        
-        // Kopplar knappen till ActionListenern som skickades in till konstruktorn.
-        // När man klickar på knappen kommer den lyssnaren att köras.
+
+        // Lägger till lyssnaren som körs när knappen trycks på
         startButton.addActionListener(onStart);
-        
-        // Skapar en ny panel för att hålla knappen (placerad i södra delen av layouten).
+
+        // Skapar en ny panel som ska ligga längst ner (söder)
         JPanel south = new JPanel();
+
+        // Lägger till knappen i den panelen
         south.add(startButton);
-      
-        // Lägger till panelen med knappen längst ner i StartPanel.
+
+        // Lägger till panelen längst ner i StartPanel
         this.add(south, "South");
     }
 }

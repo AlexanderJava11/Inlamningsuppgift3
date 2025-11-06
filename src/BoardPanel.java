@@ -4,104 +4,94 @@ import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 
-// Klassen BoardPanel representerar den grafiska delen av spelbrädet.
-// Den visar alla rutor (Tiles) som knappar i ett rutnät och uppdateras när spelet ändras.
+// Klassen BoardPanel visar själva spelbrädet på skärmen.
+// Den innehåller alla rutor (Tiles) som knappar och uppdateras när man flyttar brickor.
 public final class BoardPanel extends JPanel {
 
-    // En tvådimensionell array med knappar – en för varje ruta på brädet.
-    private final JButton[][] buttons;
+    private final JButton[][] buttons; // Knapparna som representerar rutorna på brädet
+    private final Board board;         // Själva spelbrädet (modell)
+    private GameController controller; // Hanterar klick och logik
 
-    // Referens till spelbrädet (modellen) som innehåller alla rutor.
-    private final Board board;
-
-    // Referens till GameController som hanterar logiken när en ruta klickas.
-    private GameController controller;
-
-    // Konstruktor som tar emot ett Board-objekt och bygger upp gränssnittet.
+    // Skapar panelen och bygger upp rutnätet
     public BoardPanel(Board board) {
-        this.board = board; // Sparar referensen till brädet.
+        this.board = board; // Spara referensen till brädet
 
-        int n = board.size(); // Hämtar storleken på brädet (t.ex. 4 för 4x4).
+        int n = board.size(); // Hämta storleken (t.ex. 4 för 4x4)
 
-        // Skapar en 2D-array med knappar i samma storlek som brädet.
+        // Skapa en matris med knappar i samma storlek som brädet
         this.buttons = new JButton[n][n];
 
-        // Sätter layouten så att knapparna ordnas i ett rutnät (GridLayout).
-        this.setLayout(new GridLayout(n, n, 6, 6)); // 6 px mellanrum mellan knappar.
+        // Sätt layouten till rutnät (GridLayout) med lite mellanrum
+        this.setLayout(new GridLayout(n, n, 6, 6));
 
-        // Lägger lite extra tomrum runt brädet.
+        // Lägg lite tomrum runt hela brädet
         this.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
-        // Skapar knapparna och lägger till dem i panelen.
+        // Skapa knapparna
         this.createButtons();
 
-        // Uppdaterar knapparnas text och utseende efter brädets aktuella tillstånd.
+        // Uppdatera knapparnas text och färg
         this.refresh();
     }
 
-    // setController() används för att koppla panelen till en GameController.
+    // Kopplar panelen till GameController så klick fungerar
     public void setController(GameController controller) {
         this.controller = controller;
     }
 
-    // createButtons() skapar alla knappar för brädet och lägger till klicklyssnare.
+    // Skapar alla knappar i brädet
     private void createButtons() {
         int n = this.board.size();
 
-        // Loopa igenom alla rader och kolumner i brädet.
+        // Loopa genom varje rad och kolumn
         for (int row = 0; row < n; ++row) {
             for (int col = 0; col < n; ++col) {
-                // Behåller lokala kopior av positionerna (för användning i lambda).
-                final int rr = row, cc = col;
+                final int rr = row; // Spara rad
+                final int cc = col; // Spara kolumn
 
-                // Skapar en ny knapp.
-                JButton button = new JButton();
+                JButton button = new JButton(); // Skapa ny knapp
 
-                // Gör texten på knappen större för bättre synlighet.
+                // Gör texten på knappen större
                 button.setFont(button.getFont().deriveFont(24.0F));
 
-                // Gör så att knappen inte får fokusmarkering (ingen "ram" vid klick).
+                // Ta bort fokusmarkering (ingen blå ram när man klickar)
                 button.setFocusable(false);
 
-                // När man klickar på en knapp, anropa controllerns onTileClicked().
+                // När man klickar – meddela GameController
                 button.addActionListener((e) -> {
                     if (this.controller != null) controller.onTileClicked(rr, cc);
                 });
 
-                // Sparar knappen i arrayen.
+                // Spara knappen i listan
                 this.buttons[row][col] = button;
 
-                // Lägger till knappen i panelen (så att den syns i GUI:t).
+                // Lägg till knappen på panelen så den syns
                 this.add(button);
             }
         }
     }
 
-    // refresh() uppdaterar alla knappars text, färg och tillstånd
-    // baserat på brädets aktuella position (t.ex. om en ruta är tom).
+    // Uppdaterar alla knappar beroende på hur brädet ser ut just nu
     public void refresh() {
         int n = this.board.size();
 
-        // Loopa igenom alla rutor.
+        // Gå igenom varje ruta
         for (int row = 0; row < n; ++row) {
             for (int col = 0; col < n; ++col) {
-                // Hämtar rutan (Tile) på denna position.
-                Tile tile = this.board.get(row, col);
+                Tile tile = this.board.get(row, col);   // Hämta brickan
+                JButton button = this.buttons[row][col]; // Hämta motsvarande knapp
 
-                // Hämtar motsvarande knapp.
-                JButton button = this.buttons[row][col];
-
-                // Sätter knappens text till rutan värde (eller tom sträng om tom ruta).
+                // Sätt texten på knappen (eller tom om det är den tomma rutan)
                 button.setText(tile.toString());
 
-                // Om rutan är tom (värde 0), gråa ut knappen.
                 if (tile.isEmpty()) {
-                    button.setEnabled(false); // Gör knappen icke-klickbar.
-                    button.setBackground(Color.LIGHT_GRAY); // Grå bakgrund.
-                    button.setForeground(Color.DARK_GRAY);   // Mörk text.
-                    button.setBorder(BorderFactory.createLineBorder(Color.GRAY, 2)); // Tunn kant.
+                    // Om det är den tomma rutan (0) → grå och inaktiv
+                    button.setEnabled(false);
+                    button.setBackground(Color.LIGHT_GRAY);
+                    button.setForeground(Color.DARK_GRAY);
+                    button.setBorder(BorderFactory.createLineBorder(Color.GRAY, 2));
                 } else {
-                    // Om rutan har ett värde, gör den aktiv och standardfärgad.
+                    // Annars → normal färg och aktiv
                     button.setEnabled(true);
                     button.setBackground((Color) null);
                     button.setForeground((Color) null);
@@ -109,7 +99,7 @@ public final class BoardPanel extends JPanel {
             }
         }
 
-        // Tvingar panelen att ritas om (uppdateras visuellt).
+        // Rita om panelen så förändringen syns
         this.repaint();
     }
 }

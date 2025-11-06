@@ -1,22 +1,17 @@
-// Klassen Move representerar ett drag (en förflyttning) i ett spel.
-// Den är final, vilket betyder att ingen annan klass kan ärva från den.
-// Detta är bra när man vill att klassen ska vara oföränderlig (immutable).
-public final class Move {
+// Klassen Move representerar ett drag i spelet (när en bricka flyttas)
+public final class Move {   // final betyder att ingen annan klass kan ärva den
 
-    // Dessa fält beskriver varifrån och vart draget sker.
-    // 'fromRow' och 'fromCol' är startpositionens rad och kolumn.
-    // 'toRow' och 'toCol' är målpositionens rad och kolumn.
-    public final int fromRow;
-    public final int fromCol;
-    public final int toRow;
-    public final int toCol;
-    
-    // Konstruktor som skapar ett Move-objekt med givna koordinater.
-    // Alla värden lagras direkt eftersom fälten är 'final' (de kan inte ändras senare)
+    // Sparar var brickan flyttas ifrån och vart den flyttas till
+    public final int fromRow;  // Start-rad
+    public final int fromCol;  // Start-kolumn
+    public final int toRow;    // Mål-rad
+    public final int toCol;    // Mål-kolumn
+
+    // Skapar ett Move-objekt och sparar alla värden
     public Move(int fromRow, int fromCol, int toRow, int toCol) {
-        this.fromRow = fromRow;
-        this.fromCol = fromCol;
-        this.toRow = toRow;
-        this.toCol = toCol;
+        this.fromRow = fromRow;  // Sätt start-rad
+        this.fromCol = fromCol;  // Sätt start-kolumn
+        this.toRow = toRow;      // Sätt mål-rad
+        this.toCol = toCol;      // Sätt mål-kolumn
     }
 }
