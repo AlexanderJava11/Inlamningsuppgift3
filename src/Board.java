@@ -201,8 +201,21 @@ public final class Board {
         return true;
     }
 
-    // getMoves() returnerar antal drag som gjorts.
+    // getMoves() returnerar antalet drag som gjorts hittills i spelet.
+    // Den används ofta för att visa spelarens framsteg eller antal försök i GUI:t.
     public int getMoves() {
         return this.moves;
+    }
+
+    // get() returnerar Tile-objektet (brickan) på en viss rad och kolumn i brädet.
+    // Den används av t.ex. BoardPanel för att rita ut rätt brickor på rätt plats.
+    public Tile get(int row, int col) {
+        return this.grid[row][col];
+    }
+
+    // size() returnerar storleken på brädet (t.ex. 4 för ett 4x4-bräde).
+    // Den används för att veta hur många rader och kolumner som ska ritas upp i GUI:t.
+    public int size() {
+        return this.SIZE;
     }
 }
