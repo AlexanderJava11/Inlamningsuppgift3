@@ -20,7 +20,7 @@ public class StartPanel extends JPanel {
         JLabel image;
         try {
             image = new JLabel(new ImageIcon(this.getClass().getResource("Start.png")));
-        } catch (Exception var5) {
+        } catch (Exception e) {
             // Om bilden inte hittas visas istället en text.
             image = new JLabel("Startbild inte hittad");
             // Texten centreras horisontellt i JLabel.
