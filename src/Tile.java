@@ -13,6 +13,7 @@ public final class Tile {
         return this.value;
     }
 
+    @Override
     public String toString() {
         return this.isEmpty() ? "" : Integer.toString(this.value);
     }
