@@ -43,33 +43,33 @@ Användaren kan välja **storlek** på brädet (2x2 till 8x8), se **antal drag**
 'GameFrame.java' startar program och
 visar startbild vid 'StartPanel.java'.
 
-2.🧩**Välj spelstorlek**
+2. 🧩**Välj spelstorlek**
 En dialogruta frågar *"Vilken storlek vill du spela på? (2-8)"*
 En exempel är '3' som ger ett 3x3 pussel
 
-3.🎮**Starta nytt spel**
+3. 🎮**Starta nytt spel**
 'Board.java' initerar ett löst pussel och blandar det slumpmässigt.
 'BoardPanel.java' ritar brickorna som knappar
 
-4.🖱️**Spelinteraktioner**
+4. 🖱️**Spelinteraktioner**
 Användaren klickar på brickorna.
 'GameController.java' kontrollerar giltig flytt (bredvid den tomma rutan).
 Brädet uppdateras automatiskt via 'BoardPanel.refresh()'.
 
-5.🔄**Ångra/Gör om**
+5. 🔄**Ångra/Gör om**
 Användaren har en möjlighet att få klicka på "Ångra" eller "Gör om" för att flytta tillbaka brickorna.
 Stack baserad implemenation ('undoStack' och 'redoStack').
 
-6.🏁**Vinst**
+6. 🏁**Vinst**
 När brickorna ligger i ordning visas en dialogruta som står:
 >🎉"Grattis, du löste spelet på X drag och Y sekunder!"
 Spelaren har även alternativ att få vara med i en highscore listan.
 
-7.🏆**Highscore**
+7. 🏆**Highscore**
 Sparar namn, antal drag och tid i 'highscore.txt' fil.
 Visar de 10 bästa resultaten i en dialogruta.
 
-8.🔁**Spela igen eller avsluta**
+8. 🔁**Spela igen eller avsluta**
 Efter vinst får användaren frågan:
 
 > "Vill du spela igen?"
