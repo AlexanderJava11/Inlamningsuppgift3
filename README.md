@@ -71,8 +71,11 @@ Visar de 10 bästa resultaten i en dialogruta.
 
 8.🔁**Spela igen eller avsluta**
 Efter vinst får användaren frågan:
+
 > "Vill du spela igen?"
+
 > Ja -> Ny startbild
+
 > Nej -> Programmet avslutas.
 
 
